@@ -16,9 +16,9 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'cocoapods'
-  spec.add_runtime_dependency 'cocoapods-downloader'
-  spec.add_runtime_dependency 'addressable', '>= 2.6.0'
+  spec.add_runtime_dependency 'cocoapods', '~> 1.0'
+  spec.add_runtime_dependency 'cocoapods-downloader', '~> 1.0'
+  spec.add_runtime_dependency 'addressable', '~> 2.6'
 
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.9'

@@ -2,9 +2,9 @@ PATH
   remote: .
   specs:
     cocoapods-azure-universal-packages (0.0.1)
-      addressable (>= 2.6.0)
-      cocoapods
-      cocoapods-downloader
+      addressable (~> 2.6)
+      cocoapods (~> 1.0)
+      cocoapods-downloader (~> 1.0)
 
 GEM
   remote: https://rubygems.org/
