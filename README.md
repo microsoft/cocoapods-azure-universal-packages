@@ -1,5 +1,71 @@
+# CocoaPods Azure Universal Packages plugin
 
-# Contributing
+This project is a [CocoaPods](https://github.com/CocoaPods/CocoaPods) plugin that allows to dowload pods published as [Universal Packages](https://docs.microsoft.com/en-us/azure/devops/artifacts/quickstarts/universal-packages) in [Azure Artifacts](https://azure.microsoft.com/en-gb/services/devops/artifacts/) feeds.
+
+## Getting started
+
+Install the plugin by adding to your `Gemfile`
+```Ruby
+gem "cocoapods-azure-universal-packages"
+```
+
+Under the hood the plugin uses the [Azure CLI](https://aka.ms/azcli) to download the Universal Packages, you can install it running
+```shell
+brew update && brew install azure-cli
+```
+
+Finally, ensure that you are logged in using
+```shell
+az login
+```
+
+## How it works
+
+The plugin replaces the default CocoaPods HTTP downloader when a pod source URL points to a universal package and it uses the Azure CLI to perform the download.
+
+_Note:_ The plugin will install the Azure CLI [DevOps extension](https://github.com/Azure/azure-devops-cli-extension) automatically when running `pod install` or `pod update` for the first time.
+
+## Usage
+
+Add to your Podfile
+```Ruby
+plugin 'cocoapods-azure-universal-packages', {
+    :base_url => '{{BASE_URL}}'
+}
+```
+replacing `{{BASE_URL}}` with the base URL of your Azure Artifacts feed (for example, `https://pkgs.dev.azure.com/`).
+
+Then, in your podspec set the pod's source to
+```Ruby
+# For project scoped feeds:
+spec.source = { :http => '{{BASE_URL}}/{{ORGANIZATION}}/{{PROJECT}}/_apis/packaging/feeds/{{FEED}}/upack/packages/{{PACKAGE}}/versions/{{VERSION}}' }
+
+# For organization scoped feeds:
+spec.source = { :http => '{{BASE_URL}}/{{ORGANIZATION}}/_apis/packaging/feeds/{{FEED}}/upack/packages/{{PACKAGE}}/versions/{{VERSION}}' }
+```
+where:
+- `{{BASE_URL}}` is the base URL you chose above
+- `{{ORGANIZATION}}` is the name of your feed's organization
+- `{{PROJECT}}` is the name of your feed's project (you must specify this only if your feed is a project scoped feed)
+- `{{PACKAGE}}` is the name of your universal package
+- `{{VERSION}}` is the version of your universal package
+
+### Plugin parameters
+
+| Parameter | Description |
+| --------- | ----------- |
+| `base_url` | The base URL of the Azure Artifacts feed. Required unless `base_urls` is specified. |
+| `base_urls` | An array of base URLs of possible Azure Artifacts feeds. Required unless `base_url` is specified. |
+| `update_cli_extension` | Whether to update the Azure CLI DevOps extensions automatically. Default to `false`. |
+
+## Run tests for this plugin
+
+To run the tests, use
+```shell
+rake tests
+```
+
+## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
