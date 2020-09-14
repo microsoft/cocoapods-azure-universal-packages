@@ -18,6 +18,8 @@ jobs:
       with:
         ruby-version: 2.6
     - name: Install dependencies
-      run: bundle install --deployment
+      run: |
+        bundle config deployment true
+        bundle install
     - name: Run tests
       run: bundle exec rake tests
