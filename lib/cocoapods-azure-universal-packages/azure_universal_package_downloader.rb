@@ -28,6 +28,29 @@ module Pod
 
         if !aup_uri_components.nil? && Downloader.azure_base_urls.include?("#{aup_uri_components['scheme']}://#{aup_uri_components['host']}")
           download_azure_universal_package!(aup_uri_components)
+
+          # Extract the file if it's the only one in the package
+          package_files = target_path.glob('*')
+          if package_files.count == 1 && package_files.first.file?
+            file = package_files.first
+            file_type = begin
+              case file.to_s
+              when /\.zip$/
+                :zip
+              when /\.(tgz|tar\.gz)$/
+                :tgz
+              when /\.tar$/
+                :tar
+              when /\.(tbz|tar\.bz2)$/
+                :tbz
+              when /\.(txz|tar\.xz)$/
+                :txz
+              when /\.dmg$/
+                :dmg
+              end
+            end
+            extract_with_type(file, file_type) unless file_type.nil?
+          end
         else
           aliased_download!
         end
