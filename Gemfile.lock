@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cocoapods-azure-universal-packages (0.0.1)
+    cocoapods-azure-universal-packages (0.0.2)
       addressable (~> 2.6)
       cocoapods (~> 1.0)
       cocoapods-downloader (~> 1.0)

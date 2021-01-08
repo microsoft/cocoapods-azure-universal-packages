@@ -13,6 +13,7 @@ describe Pod::Downloader::Http do
         downloader = Pod::Downloader::Http.new("/tmp", "https://www.microsoft.com", {})
 
         downloader.target_path.stubs(:mkpath)
+        downloader.target_path.stubs(:glob).returns([])
         downloader.expects(:aliased_download!)
         downloader.download
       end
@@ -33,6 +34,7 @@ describe Pod::Downloader::Http do
         ]
 
         downloader.target_path.stubs(:mkpath)
+        downloader.target_path.stubs(:glob).returns([])
         downloader.expects(:execute_command).with('az', parameters, anything)
         downloader.download
       end
@@ -53,9 +55,57 @@ describe Pod::Downloader::Http do
         ]
 
         downloader.target_path.stubs(:mkpath)
+        downloader.target_path.stubs(:glob).returns([])
         downloader.expects(:execute_command).with('az', parameters, anything)
         downloader.download
       end
+    end
+
+    context 'when downloading a universal package with a single file' do
+
+      [
+        [:zip, '.zip'],
+        [:tgz, '.tgz'], [:tgz, '.tar.gz'],
+        [:tar, '.tar'],
+        [:tbz, '.tbz'], [:tbz, '.tar.bz2'],
+        [:txz, '.txz'], [:txz, '.tar.xz'],
+        [:dmg, '.dmg'],
+      ].each do |params|
+        it 'extracts the archive ' + params[1] do
+          downloader = Pod::Downloader::Http.new("/tmp", "https://pkgs.dev.azure.com/test_org/test_project/_apis/packaging/feeds/project_feed/upack/packages/test_package/versions/1.2.3", {})
+          archive = Pathname("/tmp/archive#{params[1]}")
+          archive_type = params[0]
+
+          archive.stubs(:file?).returns(true)
+          downloader.target_path.stubs(:mkpath)
+          downloader.target_path.stubs(:glob).returns([archive])
+          downloader.expects(:extract_with_type).with(archive, archive_type)
+          downloader.download
+        end
+      end
+
+      it 'does not extract non archive files' do
+        downloader = Pod::Downloader::Http.new("/tmp", "https://pkgs.dev.azure.com/test_org/test_project/_apis/packaging/feeds/project_feed/upack/packages/test_package/versions/1.2.3", {})
+        file = Pathname("/tmp/file.txt")
+
+        file.stubs(:file?).returns(true)
+        downloader.target_path.stubs(:mkpath)
+        downloader.target_path.stubs(:glob).returns([file])
+        downloader.expects(:extract_with_type).never
+        downloader.download
+      end
+
+      it 'does not extract directories' do
+        downloader = Pod::Downloader::Http.new("/tmp", "https://pkgs.dev.azure.com/test_org/test_project/_apis/packaging/feeds/project_feed/upack/packages/test_package/versions/1.2.3", {})
+        dir = Pathname("/tmp/dir.zip")
+
+        dir.stubs(:file?).returns(false)
+        downloader.target_path.stubs(:mkpath)
+        downloader.target_path.stubs(:glob).returns([dir])
+        downloader.expects(:extract_with_type).never
+        downloader.download
+      end
+
     end
 
   end
