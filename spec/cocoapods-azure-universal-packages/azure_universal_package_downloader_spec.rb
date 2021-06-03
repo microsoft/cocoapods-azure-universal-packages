@@ -21,7 +21,7 @@ describe Pod::Downloader::Http do
 
     context 'when downloading a pod from one of the configured Azure organizations' do
 
-      %w[
+      [
         "https://dev.azure.com/test_org",
         "https://test_org.azure.com"
       ].each do |org|

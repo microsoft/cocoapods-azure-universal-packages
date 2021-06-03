@@ -65,7 +65,7 @@ describe CocoapodsAzureUniversalPackages do
           it 'raises an exception' do
             Pod::Downloader.expects(:azure_organizations=).with(equals([]))
             Pod::Downloader.stubs(:azure_organizations).returns([])
-            expect { CocoapodsAzureUniversalPackages.pre_install({url_option.to_sym => []}) }.to raise_error(Pod::Informative, '[!] You must configure at least one Azure base url'.red)
+            expect { CocoapodsAzureUniversalPackages.pre_install({url_option.to_sym => []}) }.to raise_error(Pod::Informative, '[!] You must configure at least one Azure organization'.red)
           end
         end
       end
@@ -73,7 +73,7 @@ describe CocoapodsAzureUniversalPackages do
       context "without an organization argument" do
         it 'raises an exception' do
           Pod::Downloader.expects(:azure_organizations=).never
-          expect { CocoapodsAzureUniversalPackages.pre_install({}) }.to raise_error(Pod::Informative, '[!] You must configure at least one Azure base url'.red)
+          expect { CocoapodsAzureUniversalPackages.pre_install({}) }.to raise_error(Pod::Informative, '[!] You must configure at least one Azure organization'.red)
         end
       end
     end
