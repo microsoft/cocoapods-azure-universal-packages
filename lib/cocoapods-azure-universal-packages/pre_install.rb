@@ -18,11 +18,11 @@ module CocoapodsAzureUniversalPackages
       end
 
       # Now we can configure the downloader to use the Azure CLI for downloading pods from the given hosts
-      azure_base_urls = options[:base_url] || options[:base_urls]
-      raise Pod::Informative, 'You must configure at least one Azure base url' unless azure_base_urls
+      azure_organizations = options[:organization] || options[:organizations]
+      raise Pod::Informative, 'You must configure at least one Azure organization' unless azure_organizations
 
-      Pod::Downloader.azure_base_urls = ([] << azure_base_urls).flatten.map { |url| url.delete_suffix('/') }
-      raise Pod::Informative, 'You must configure at least one Azure base url' if Pod::Downloader.azure_base_urls.empty?
+      Pod::Downloader.azure_organizations = ([] << azure_organizations).flatten.map { |url| url.delete_suffix('/') }
+      raise Pod::Informative, 'You must configure at least one Azure organization' if Pod::Downloader.azure_organizations.empty?
     end
 
   end

@@ -5,11 +5,11 @@ describe CocoapodsAzureUniversalPackages do
   describe ".pre_install" do
 
     before(:each) do
-      Pod::Downloader.azure_base_urls = []
+      Pod::Downloader.azure_organizations = []
     end
 
     context 'when Azure CLI is not installed' do
-      let(:options) { {:base_url => "https://dev.azure.com/"} }
+      let(:options) { {:organization => "https://dev.azure.com/test_org"} }
 
       it 'raises an exception' do
         Pod::Executable.expects(:which).with('az').returns(nil)
@@ -18,7 +18,7 @@ describe CocoapodsAzureUniversalPackages do
     end
 
     context 'when Azure CLI is installed' do
-      let(:base_options) { {:base_url => "https://dev.azure.com/"} }
+      let(:base_options) { {:organization => "https://dev.azure.com/test_org"} }
 
       before(:each) do
         Pod::Executable.stubs(:which).with('az').returns('az')
@@ -44,35 +44,35 @@ describe CocoapodsAzureUniversalPackages do
         end
       end
 
-      %w[base_url base_urls].each do |url_option|
+      %w[organization organizations].each do |url_option|
         context "with a string specified in '#{url_option}'" do
           it 'adds the url to the downloader' do
-            Pod::Downloader.expects(:azure_base_urls=).with(includes("https://dev.azure.com"))
-            Pod::Downloader.stubs(:azure_base_urls).returns(["https://dev.azure.com"])
+            Pod::Downloader.expects(:azure_organizations=).with(includes("https://dev.azure.com"))
+            Pod::Downloader.stubs(:azure_organizations).returns(["https://dev.azure.com"])
             CocoapodsAzureUniversalPackages.pre_install({url_option.to_sym => "https://dev.azure.com/"})
           end
         end
 
         context "with an array specified in '#{url_option}'" do
           it 'adds the url to the downloader' do
-            Pod::Downloader.expects(:azure_base_urls=).with(all_of(includes("https://dev.azure.com"), includes("https://pkgs.dev.azure.com")))
-            Pod::Downloader.stubs(:azure_base_urls).returns(["https://dev.azure.com", "https://pkgs.dev.azure.com"])
+            Pod::Downloader.expects(:azure_organizations=).with(all_of(includes("https://dev.azure.com"), includes("https://pkgs.dev.azure.com")))
+            Pod::Downloader.stubs(:azure_organizations).returns(["https://dev.azure.com", "https://pkgs.dev.azure.com"])
             CocoapodsAzureUniversalPackages.pre_install({url_option.to_sym => ["https://dev.azure.com/", "https://pkgs.dev.azure.com/"]})
           end
         end
 
         context "with an empty array specified in '#{url_option}'" do
           it 'raises an exception' do
-            Pod::Downloader.expects(:azure_base_urls=).with(equals([]))
-            Pod::Downloader.stubs(:azure_base_urls).returns([])
+            Pod::Downloader.expects(:azure_organizations=).with(equals([]))
+            Pod::Downloader.stubs(:azure_organizations).returns([])
             expect { CocoapodsAzureUniversalPackages.pre_install({url_option.to_sym => []}) }.to raise_error(Pod::Informative, '[!] You must configure at least one Azure base url'.red)
           end
         end
       end
 
-      context "without a base url argument" do
+      context "without an organization argument" do
         it 'raises an exception' do
-          Pod::Downloader.expects(:azure_base_urls=).never
+          Pod::Downloader.expects(:azure_organizations=).never
           expect { CocoapodsAzureUniversalPackages.pre_install({}) }.to raise_error(Pod::Informative, '[!] You must configure at least one Azure base url'.red)
         end
       end
