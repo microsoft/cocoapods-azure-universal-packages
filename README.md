@@ -30,22 +30,21 @@ _Note:_ The plugin will install the Azure CLI [DevOps extension](https://github.
 Add to your Podfile
 ```Ruby
 plugin 'cocoapods-azure-universal-packages', {
-    :base_url => '{{BASE_URL}}'
+    :organization => '{{ORGANIZATION_URL}}'
 }
 ```
-replacing `{{BASE_URL}}` with the base URL of your Azure Artifacts feed (for example, `https://pkgs.dev.azure.com/`).
+replacing `{{ORGANIZATION_URL}}` with the base URL of your Azure Artifacts feed (for example: `https://pkgs.dev.azure.com/myorg`).
 
 Then, in your podspec set the pod's source to
 ```Ruby
 # For project scoped feeds:
-spec.source = { :http => '{{BASE_URL}}/{{ORGANIZATION}}/{{PROJECT}}/_apis/packaging/feeds/{{FEED}}/upack/packages/{{PACKAGE}}/versions/{{VERSION}}' }
+spec.source = { :http => '{{ORGANIZATION_URL}}/{{PROJECT}}/_apis/packaging/feeds/{{FEED}}/upack/packages/{{PACKAGE}}/versions/{{VERSION}}' }
 
 # For organization scoped feeds:
-spec.source = { :http => '{{BASE_URL}}/{{ORGANIZATION}}/_apis/packaging/feeds/{{FEED}}/upack/packages/{{PACKAGE}}/versions/{{VERSION}}' }
+spec.source = { :http => '{{ORGANIZATION_URL}}/_apis/packaging/feeds/{{FEED}}/upack/packages/{{PACKAGE}}/versions/{{VERSION}}' }
 ```
 where:
-- `{{BASE_URL}}` is the base URL you chose above
-- `{{ORGANIZATION}}` is the name of your feed's organization
+- `{{ORGANIZATION_URL}}` is the URL of your feed's organization
 - `{{PROJECT}}` is the name of your feed's project (you must specify this only if your feed is a project scoped feed)
 - `{{PACKAGE}}` is the name of your universal package
 - `{{VERSION}}` is the version of your universal package
@@ -54,8 +53,8 @@ where:
 
 | Parameter | Description |
 | --------- | ----------- |
-| `base_url` | The base URL of the Azure Artifacts feed. Required unless `base_urls` is specified. |
-| `base_urls` | An array of base URLs of possible Azure Artifacts feeds. Required unless `base_url` is specified. |
+| `organization` | The URL of the Azure Artifacts feed's orgnization. Required unless `organizations` is specified. |
+| `organizations` | An array of URLs of possible Azure Artifacts feeds' organizations. Required unless `organization` is specified. |
 | `update_cli_extension` | Whether to update the Azure CLI DevOps extensions automatically. Default to `false`. |
 
 ## Run tests for this plugin
