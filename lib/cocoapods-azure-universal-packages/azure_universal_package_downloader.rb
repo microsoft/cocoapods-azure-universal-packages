@@ -60,6 +60,7 @@ module Pod
               extract_with_type(file, file_type) unless file_type.nil?
             end
           else
+            Pod::UserInterface.warn("#{url} looks like a Azure artifact feed but it's malformed")
             aliased_download!
           end
         end

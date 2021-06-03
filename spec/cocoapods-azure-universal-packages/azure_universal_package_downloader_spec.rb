@@ -25,11 +25,8 @@ describe Pod::Downloader::Http do
         "https://dev.azure.com/test_org",
         "https://test_org.azure.com"
       ].each do |org|
-        before(:each) do
-          Pod::Downloader.azure_organizations = [org]
-        end
-
         it "can download universal packages from organization feeds with an organization url like #{org}" do
+          Pod::Downloader.azure_organizations = [org]
           downloader = Pod::Downloader::Http.new("/tmp", "#{org}/_apis/packaging/feeds/org_feed/upack/packages/test_package/versions/1.2.3", {})
           parameters = [
             'artifacts',
@@ -49,6 +46,7 @@ describe Pod::Downloader::Http do
         end
   
         it "can download universal packages from project feeds with an organization url like #{org}" do
+          Pod::Downloader.azure_organizations = [org]
           downloader = Pod::Downloader::Http.new("/tmp", "#{org}/test_project/_apis/packaging/feeds/project_feed/upack/packages/test_package/versions/1.2.3", {})
           parameters = [
             'artifacts',
