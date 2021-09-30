@@ -57,6 +57,8 @@ module Pod
                   :dmg
                 end
               end
+              self.options[:type] = file_type
+              @filename = File.basename(file)
               extract_with_type(file, file_type) unless file_type.nil?
             end
           else
