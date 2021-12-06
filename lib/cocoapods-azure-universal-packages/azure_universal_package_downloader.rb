@@ -10,7 +10,25 @@ module Pod
     class << self
       attr_accessor :azure_organizations
     end
-
+  
+    class EmptyProcessor
+        def self.restore(name, value)
+            return value.gsub(/\+/, " ") if name == "project"
+            return value.gsub(/\+/, " ") if name == "feed"
+            return value.gsub(/\+/, " ") if name == "package"
+            return value.gsub(/\+/, " ") if name == "version"
+            return value
+        end
+        
+        def self.match(name)
+            return ".*?" if name == "project"
+            return ".*?" if name == "feed"
+            return ".*?" if name == "package"
+            return ".*?" if name == "version"
+            return ".*"
+        end
+    end
+    
     class Http
 
       private
@@ -28,12 +46,12 @@ module Pod
         else
           # Parse the url
           organization.delete_suffix!('/')
-          aup_uri_template = Addressable::Template.new(
-            "#{organization}{/project}/_apis/packaging/feeds/{feed}/upack/packages/{package}/versions/{version}"
-          )
-          uri = Addressable::URI.parse(url)
-          aup_uri_components = aup_uri_template.extract(uri)
 
+          uri = Addressable::URI.parse(url)
+          aup_uri_components = Addressable::Template.new(
+            "#{organization}/{project}/_apis/packaging/feeds/{feed}/unpack/packages/{package}/version/{version}"
+          ).extract(uri, EmptyProcessor)
+          
           if !aup_uri_components.nil?
             download_azure_universal_package!(aup_uri_components.merge({ 'organization' => organization }))
   
