@@ -3,6 +3,10 @@ name: Publish
 on:
   workflow_dispatch:
 
+permissions:
+  packages: write
+  contents: read  
+
 jobs:
   build_publish:
     name: Build and Publish
